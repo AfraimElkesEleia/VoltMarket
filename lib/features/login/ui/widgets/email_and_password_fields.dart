@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:volt_market/core/helper/app_regex.dart';
+import 'package:volt_market/core/helper/navigation_helper.dart';
+import 'package:volt_market/core/helper/spacing_helper.dart';
+import 'package:volt_market/core/routing/my_routes.dart';
+import 'package:volt_market/core/widgets/button_app_widget.dart';
+import 'package:volt_market/core/widgets/text_app_widget.dart';
+
+class EmailAndPasswordFields extends StatefulWidget {
+  const EmailAndPasswordFields({super.key});
+
+  @override
+  State<EmailAndPasswordFields> createState() => _EmailAndPasswordFieldsState();
+}
+
+class _EmailAndPasswordFieldsState extends State<EmailAndPasswordFields> {
+  final _formKey = GlobalKey<FormState>();
+  final emailTextEditingControler = TextEditingController();
+  final passwordTextEditingController = TextEditingController();
+  bool isObsecure = false;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextAppWidget(
+                textEditingController: emailTextEditingControler,
+                text: 'Email',
+                prefixIcon: Icons.email,
+                validator: (email) {
+                  if (email == null || email.isEmpty) {
+                    return 'Email is required';
+                  } else if (!AppRegex.checkEmailText(email)) {
+                    return 'Email is not valid';
+                  }
+                  return null;
+                },
+              ),
+              verticalSpace(20),
+              TextAppWidget(
+                textEditingController: passwordTextEditingController,
+                text: 'Password',
+                prefixIcon: Icons.password,
+                isObsecure: isObsecure,
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    isObsecure = !isObsecure;
+                    setState(() {});
+                  },
+                  icon:
+                      isObsecure
+                          ? Icon(Icons.visibility_off)
+                          : Icon(Icons.visibility),
+                ),
+                validator: (password) {
+                  if (password == null || password.isEmpty) {
+                    return 'Password is required';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+        verticalSpace(10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            GestureDetector(
+              onTap: () => context.pushNamed(MyRoutes.forgetPasswordScreen),
+              child: Text(
+                'Forget Password',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.blue[900],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        verticalSpace(20),
+        ButtonAppWidget(
+          text: 'Login',
+          onTap: () {
+            if (_formKey.currentState!.validate() &&
+                _formKey.currentState!.validate()) {
+              debugPrint('done');
+            } else {
+              debugPrint('Not valid');
+            }
+          },
+        ),
+      ],
+    );
+  }
+}
