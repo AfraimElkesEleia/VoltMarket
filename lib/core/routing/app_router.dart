@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:volt_market/core/routing/my_routes.dart';
+import 'package:volt_market/features/login/ui/screens/forget_password_screen.dart';
 import 'package:volt_market/features/login/ui/screens/login_screen.dart';
 import 'package:volt_market/features/onboarding/screens/onboarding_screen.dart';
 import 'package:volt_market/features/signup/ui/screens/signup_screen.dart';
@@ -14,6 +15,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case MyRoutes.signupScreen:
         return MaterialPageRoute(builder: (_) => SignupScreen());
+      case MyRoutes.forgetPasswordScreen:
+        return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
       default:
         return MaterialPageRoute(
           builder:

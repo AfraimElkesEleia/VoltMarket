@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:volt_market/core/constants/image_manager.dart';
 import 'package:volt_market/core/helper/navigation_helper.dart';
 import 'package:volt_market/core/helper/sharedpref_helper.dart';

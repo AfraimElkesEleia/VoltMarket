@@ -18,6 +18,7 @@ class VoltMarket extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: initialRoute,
         onGenerateRoute: appRouter.generateRoute,
+        theme: ThemeData(scaffoldBackgroundColor: Colors.white),
       ),
     );
   }
