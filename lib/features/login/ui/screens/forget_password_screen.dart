@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:volt_market/core/helper/app_regex.dart';
 import 'package:volt_market/core/helper/spacing_helper.dart';
-import 'package:volt_market/core/theme/font_weight_helper.dart';
 import 'package:volt_market/core/theme/text_styles.dart';
 import 'package:volt_market/core/widgets/button_app_widget.dart';
 import 'package:volt_market/core/widgets/text_app_widget.dart';
@@ -34,12 +34,26 @@ class ForgetPasswordScreen extends StatelessWidget {
                   textEditingController: textController,
                   text: 'Email',
                   prefixIcon: Icons.email,
+                  validator: (email) {
+                    if (email == null || email.isEmpty) {
+                      return 'Email is required';
+                    } else if (!AppRegex.checkEmailText(email)) {
+                      return 'Email is invalid!!';
+                    }
+                    return null;
+                  },
                 ),
                 verticalSpace(30),
                 ButtonAppWidget(
-                  onTap: () {},
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      debugPrint('reset password');
+                    } else {
+                      debugPrint('operation is invalid');
+                    }
+                  },
                   text: 'Reset Password',
-                  textStyle: TextStyle(fontSize: 16, color: Colors.white),
+                  textStyle: TextStyles.font16WhiteRegulare,
                 ),
               ],
             ),

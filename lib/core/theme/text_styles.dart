@@ -49,4 +49,8 @@ abstract class TextStyles {
     color: Colors.grey[600],
     fontWeight: FontWeightHelper.semiBold,
   );
+  static TextStyle font16WhiteRegulare = TextStyle(
+    fontSize: 16.sp,
+    color: Colors.white,
+  );
 }
