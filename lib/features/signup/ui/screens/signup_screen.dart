@@ -1,7 +1,35 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class SignupScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:volt_market/core/helper/navigation_helper.dart';
+import 'package:volt_market/core/helper/spacing_helper.dart';
+import 'package:volt_market/core/routing/my_routes.dart';
+import 'package:volt_market/core/theme/font_weight_helper.dart';
+import 'package:volt_market/core/widgets/button_app_widget.dart';
+import 'package:volt_market/features/signup/logic/cubit/signup_cubit.dart';
+import 'package:volt_market/features/signup/ui/widgets/pic_image_widget.dart';
+import 'package:volt_market/features/signup/ui/widgets/registeration_form_widget.dart';
+
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final _picker = ImagePicker();
+  void pickImage(BuildContext context) async {
+    var pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedImage != null) {
+        context.read<SignupCubit>().imgFile = File(pickedImage.path);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +42,56 @@ class SignupScreen extends StatelessWidget {
             child: Text(
               'Register',
               style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Getting Started',
+                  style: TextStyle(
+                    fontSize: 40.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                verticalSpace(10),
+                Text(
+                  'Seems you are new here,\nLet\'s set up your profile',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeightHelper.medium,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                verticalSpace(10),
+                Center(
+                  child: PicImageWidget(onPressed: (){
+                    pickImage(context);
+                  })
+                ),
+                verticalSpace(10),
+                RegisterationFormWidget(),
+                verticalSpace(30),
+                ButtonAppWidget(
+                  onTap: () {
+                    if (context
+                        .read<SignupCubit>()
+                        .formKey
+                        .currentState!
+                        .validate()) {
+                      context.pushNamed(MyRoutes.homeScreen);
+                    }
+                  },
+                  text: 'Continue',
+                ),
+              ],
             ),
           ),
         ),

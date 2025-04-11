@@ -7,7 +7,8 @@ class TextAppWidget extends StatelessWidget {
   final IconData? prefixIcon;
   final Widget? suffixIcon;
   final bool? isObsecure;
-  final TextEditingController textEditingController;
+  final TextEditingController? textEditingController;
+  final TextInputType? keyboardType;
   final String? Function(String? value)? validator;
   const TextAppWidget({
     super.key,
@@ -15,7 +16,8 @@ class TextAppWidget extends StatelessWidget {
     this.suffixIcon,
     this.isObsecure,
     this.validator,
-    required this.textEditingController,
+    this.textEditingController,
+    this.keyboardType,
     required this.text,
   });
 
@@ -24,6 +26,7 @@ class TextAppWidget extends StatelessWidget {
     return TextFormField(
       controller: textEditingController,
       validator: validator,
+      keyboardType: keyboardType,
       obscureText: isObsecure ?? false,
       decoration: InputDecoration(
         hintText: text,

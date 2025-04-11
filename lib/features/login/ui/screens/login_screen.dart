@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:volt_market/core/helper/spacing_helper.dart';
 import 'package:volt_market/core/theme/font_weight_helper.dart';
+import 'package:volt_market/core/widgets/button_app_widget.dart';
+import 'package:volt_market/features/login/logic/cubit/login_cubit.dart';
 import 'package:volt_market/features/login/ui/widgets/dont_have_account_text.dart';
 import 'package:volt_market/features/login/ui/widgets/email_and_password_fields.dart';
 import 'package:volt_market/features/login/ui/widgets/or_text.dart';
@@ -39,6 +42,21 @@ class LoginScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: EmailAndPasswordFields(),
+                ),
+                verticalSpace(20),
+                ButtonAppWidget(
+                  text: 'Login',
+                  onTap: () {
+                    if (context
+                        .read<LoginCubit>()
+                        .formKey
+                        .currentState!
+                        .validate()) {
+                      debugPrint('done');
+                    } else {
+                      debugPrint('Not valid');
+                    }
+                  },
                 ),
                 verticalSpace(20),
                 OrText(),
