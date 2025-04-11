@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:volt_market/core/helper/app_regex.dart';
 import 'package:volt_market/core/helper/navigation_helper.dart';
 import 'package:volt_market/core/helper/spacing_helper.dart';
 import 'package:volt_market/core/routing/my_routes.dart';
 import 'package:volt_market/core/widgets/button_app_widget.dart';
 import 'package:volt_market/core/widgets/text_app_widget.dart';
+import 'package:volt_market/features/login/logic/cubit/login_cubit.dart';
 
 class EmailAndPasswordFields extends StatefulWidget {
   const EmailAndPasswordFields({super.key});
@@ -14,9 +16,6 @@ class EmailAndPasswordFields extends StatefulWidget {
 }
 
 class _EmailAndPasswordFieldsState extends State<EmailAndPasswordFields> {
-  final _formKey = GlobalKey<FormState>();
-  final emailTextEditingControler = TextEditingController();
-  final passwordTextEditingController = TextEditingController();
   bool isObsecure = false;
   @override
   Widget build(BuildContext context) {
@@ -24,11 +23,12 @@ class _EmailAndPasswordFieldsState extends State<EmailAndPasswordFields> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Form(
-          key: _formKey,
+          key: context.read<LoginCubit>().formKey,
           child: Column(
             children: [
               TextAppWidget(
-                textEditingController: emailTextEditingControler,
+                textEditingController:
+                    context.read<LoginCubit>().emailTextEditingControler,
                 text: 'Email',
                 prefixIcon: Icons.email,
                 validator: (email) {
@@ -42,7 +42,8 @@ class _EmailAndPasswordFieldsState extends State<EmailAndPasswordFields> {
               ),
               verticalSpace(20),
               TextAppWidget(
-                textEditingController: passwordTextEditingController,
+                textEditingController:
+                    context.read<LoginCubit>().passwordTextEditingController,
                 text: 'Password',
                 prefixIcon: Icons.password,
                 isObsecure: isObsecure,
@@ -82,18 +83,6 @@ class _EmailAndPasswordFieldsState extends State<EmailAndPasswordFields> {
               ),
             ),
           ],
-        ),
-        verticalSpace(20),
-        ButtonAppWidget(
-          text: 'Login',
-          onTap: () {
-            if (_formKey.currentState!.validate() &&
-                _formKey.currentState!.validate()) {
-              debugPrint('done');
-            } else {
-              debugPrint('Not valid');
-            }
-          },
         ),
       ],
     );

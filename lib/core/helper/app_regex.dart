@@ -1,5 +1,5 @@
 class AppRegex {
-  static bool checkPasswordHasUpercase(String password) {
+  static bool checkPasswordHasUpperchar(String password) {
     return RegExp(r'[A-Z]').hasMatch(password);
   }
 
@@ -21,5 +21,11 @@ class AppRegex {
 
   static bool checkEmailText(String email) {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+  }
+
+  static bool checkPasswordIsStrong(String password) {
+    return RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$',
+    ).hasMatch(password);
   }
 }
