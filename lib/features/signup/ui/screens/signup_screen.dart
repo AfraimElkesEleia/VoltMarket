@@ -8,8 +8,10 @@ import 'package:volt_market/core/helper/navigation_helper.dart';
 import 'package:volt_market/core/helper/spacing_helper.dart';
 import 'package:volt_market/core/routing/my_routes.dart';
 import 'package:volt_market/core/theme/font_weight_helper.dart';
+import 'package:volt_market/core/theme/text_styles.dart';
 import 'package:volt_market/core/widgets/button_app_widget.dart';
 import 'package:volt_market/features/signup/logic/cubit/signup_cubit.dart';
+import 'package:volt_market/features/signup/ui/widgets/build_bloc_listener.dart';
 import 'package:volt_market/features/signup/ui/widgets/pic_image_widget.dart';
 import 'package:volt_market/features/signup/ui/widgets/registeration_form_widget.dart';
 
@@ -30,7 +32,6 @@ class _SignupScreenState extends State<SignupScreen> {
       }
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -72,9 +73,11 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 verticalSpace(10),
                 Center(
-                  child: PicImageWidget(onPressed: (){
-                    pickImage(context);
-                  })
+                  child: PicImageWidget(
+                    onPressed: () {
+                      pickImage(context);
+                    },
+                  ),
                 ),
                 verticalSpace(10),
                 RegisterationFormWidget(),
@@ -86,11 +89,42 @@ class _SignupScreenState extends State<SignupScreen> {
                         .formKey
                         .currentState!
                         .validate()) {
-                      context.pushNamed(MyRoutes.homeScreen);
+                      context.read<SignupCubit>().signup();
                     }
                   },
                   text: 'Continue',
                 ),
+                verticalSpace(15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Already have an account? ',
+                      style: TextStyles.font12PoppinsWhiteThin.copyWith(
+                        fontWeight: FontWeightHelper.medium,
+                        color: Colors.black,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        bool isLastScreen = !Navigator.canPop(context);
+                        if (isLastScreen) {
+                          context.pushReplacementNamed(MyRoutes.loginScreen);
+                        } else {
+                          context.pop();
+                        }
+                      },
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          color: Colors.indigo,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                BuildBlocListener(),
               ],
             ),
           ),

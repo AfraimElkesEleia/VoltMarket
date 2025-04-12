@@ -9,12 +9,6 @@ import 'package:volt_market/features/signup/logic/cubit/signup_cubit.dart';
 import 'package:volt_market/features/signup/ui/screens/signup_screen.dart';
 
 class AppRouter {
-  late final SignupCubit signupCubit;
-  late final LoginCubit loginCubit;
-  AppRouter() {
-    signupCubit = SignupCubit();
-    loginCubit = LoginCubit();
-  }
   Route? generateRoute(RouteSettings settings) {
     final arguments = settings.arguments;
     switch (settings.name) {
@@ -24,7 +18,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider(
-                create: (context) => loginCubit,
+                create: (context) => LoginCubit(),
                 child: LoginScreen(),
               ),
         );
@@ -32,7 +26,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider(
-                create: (context) => signupCubit,
+                create: (context) => SignupCubit(),
                 child: SignupScreen(),
               ),
         );
@@ -40,7 +34,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider(
-                create: (context) => loginCubit,
+                create: (context) => LoginCubit(),
                 child: ForgetPasswordScreen(),
               ),
         );

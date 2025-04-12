@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "313738691943",
+    "project_id": "voltmarket-50efe",
+    "storage_bucket": "voltmarket-50efe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313738691943:android:6b3b60cc8abf414f539bc2",
+        "android_client_info": {
+          "package_name": "com.example.volt_market"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuLl6tShLgGJLqwUJmzdIO0DIsLYiX26k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
