@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +22,13 @@ void main() async {
   if (await SharedprefHelper.checkFirstTime()) {
     initialRoute = MyRoutes.onboardingScreen;
   } else {
-    initialRoute = MyRoutes.loginScreen;
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null || !user.emailVerified) {
+        initialRoute = MyRoutes.loginScreen;
+      } else {
+        initialRoute = MyRoutes.productsScreen;
+      }
+    });
   }
   runApp(VoltMarket(appRouter: AppRouter()));
 }

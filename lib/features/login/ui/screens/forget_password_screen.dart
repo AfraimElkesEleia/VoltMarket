@@ -6,6 +6,7 @@ import 'package:volt_market/core/theme/text_styles.dart';
 import 'package:volt_market/core/widgets/button_app_widget.dart';
 import 'package:volt_market/core/widgets/text_app_widget.dart';
 import 'package:volt_market/features/login/logic/cubit/login_cubit.dart';
+import 'package:volt_market/features/login/ui/widgets/build_bloc_listener.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
   final forgetPasswordFormKey = GlobalKey<FormState>();
@@ -53,6 +54,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                   ButtonAppWidget(
                     onTap: () {
                       if (forgetPasswordFormKey.currentState!.validate()) {
+                        context.read<LoginCubit>().resetPassword();
                         debugPrint('reset password');
                       } else {
                         debugPrint('operation is invalid');
@@ -61,6 +63,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                     text: 'Reset Password',
                     textStyle: TextStyles.font16WhiteRegulare,
                   ),
+                  BuildBlocListener(),
                 ],
               ),
             ),
