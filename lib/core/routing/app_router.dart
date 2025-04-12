@@ -5,6 +5,7 @@ import 'package:volt_market/features/login/logic/cubit/login_cubit.dart';
 import 'package:volt_market/features/login/ui/screens/forget_password_screen.dart';
 import 'package:volt_market/features/login/ui/screens/login_screen.dart';
 import 'package:volt_market/features/onboarding/screens/onboarding_screen.dart';
+import 'package:volt_market/features/products/products_screen.dart';
 import 'package:volt_market/features/signup/logic/cubit/signup_cubit.dart';
 import 'package:volt_market/features/signup/ui/screens/signup_screen.dart';
 
@@ -38,6 +39,8 @@ class AppRouter {
                 child: ForgetPasswordScreen(),
               ),
         );
+      case MyRoutes.productsScreen:
+        return MaterialPageRoute(builder: (_) => ProductsScreen());
     }
   }
 }

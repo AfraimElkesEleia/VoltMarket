@@ -32,6 +32,7 @@ class _SignupScreenState extends State<SignupScreen> {
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -81,7 +82,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 verticalSpace(10),
                 RegisterationFormWidget(),
-                verticalSpace(30),
+                verticalSpace(25),
                 ButtonAppWidget(
                   onTap: () {
                     if (context

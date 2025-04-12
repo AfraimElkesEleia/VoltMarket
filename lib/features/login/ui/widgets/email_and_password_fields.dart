@@ -4,7 +4,6 @@ import 'package:volt_market/core/helper/app_regex.dart';
 import 'package:volt_market/core/helper/navigation_helper.dart';
 import 'package:volt_market/core/helper/spacing_helper.dart';
 import 'package:volt_market/core/routing/my_routes.dart';
-import 'package:volt_market/core/widgets/button_app_widget.dart';
 import 'package:volt_market/core/widgets/text_app_widget.dart';
 import 'package:volt_market/features/login/logic/cubit/login_cubit.dart';
 
@@ -54,8 +53,8 @@ class _EmailAndPasswordFieldsState extends State<EmailAndPasswordFields> {
                   },
                   icon:
                       isObsecure
-                          ? Icon(Icons.visibility_off)
-                          : Icon(Icons.visibility),
+                          ? Icon(Icons.visibility)
+                          : Icon(Icons.visibility_off),
                 ),
                 validator: (password) {
                   if (password == null || password.isEmpty) {

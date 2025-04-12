@@ -22,8 +22,9 @@ class SignupCubit extends Cubit<SignupState> {
   final TextEditingController zipTextController = TextEditingController();
   String dropdownValue = 'Cairo';
   File? imgFile;
-  String? imgUrl = 'https://i.pinimg.com/736x/01/4e/f2/014ef2f860e8e56b27d4a3267e0a193a.jpg';
-  
+  String? imgUrl =
+      'https://i.pinimg.com/736x/01/4e/f2/014ef2f860e8e56b27d4a3267e0a193a.jpg';
+
   Future<void> signup() async {
     emit(Loading());
     try {
@@ -56,6 +57,8 @@ class SignupCubit extends Cubit<SignupState> {
         emit(
           SignupFailed(errMsg: 'The account already exists for that email.'),
         );
+      } else if (e.message!.contains('network')) {
+        emit(SignupFailed(errMsg: 'Check your network 🥺'));
       }
     } catch (e) {
       debugPrint(e.toString());

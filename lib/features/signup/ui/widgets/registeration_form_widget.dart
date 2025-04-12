@@ -135,8 +135,8 @@ class _RegisterationFormWidgetState extends State<RegisterationFormWidget> {
               },
               icon:
                   passwordObsecure
-                      ? Icon(Icons.visibility_off)
-                      : Icon(Icons.visibility),
+                      ? Icon(Icons.visibility)
+                      : Icon(Icons.visibility_off),
             ),
             validator: (password) {
               if (password == null || password.isEmpty) {
@@ -181,8 +181,8 @@ class _RegisterationFormWidgetState extends State<RegisterationFormWidget> {
               },
               icon:
                   checkPasswordobsecure
-                      ? Icon(Icons.visibility_off)
-                      : Icon(Icons.visibility),
+                      ? Icon(Icons.visibility)
+                      : Icon(Icons.visibility_off),
             ),
           ),
         ],
