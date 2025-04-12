@@ -24,7 +24,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider(
-                create: (context) => loginCubit,
+                create: (context) => LoginCubit(),
                 child: LoginScreen(),
               ),
         );
@@ -32,7 +32,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider(
-                create: (context) => signupCubit,
+                create: (context) => SignupCubit(),
                 child: SignupScreen(),
               ),
         );
@@ -40,7 +40,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider(
-                create: (context) => loginCubit,
+                create: (context) => LoginCubit(),
                 child: ForgetPasswordScreen(),
               ),
         );

@@ -98,12 +98,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         await SharedprefHelper.setFirstTimeFlag(false);
                         if (isItLastScreen) {
                           context.pushNamedAndRemoveUntil(
-                            MyRoutes.loginScreen,
+                            MyRoutes.signupScreen,
                             (route) => false,
                           );
                         } else {
                           context.pushNamedAndRemoveUntil(
-                            MyRoutes.signupScreen,
+                            MyRoutes.loginScreen,
                             (route) => false,
                           );
                         }
