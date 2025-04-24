@@ -63,6 +63,8 @@ class BuildBlocListener extends StatelessWidget {
         } else if (state is ForgetPasswordErrorOccured) {
           context.pop();
           showSnackBar(context, state.message, Colors.red);
+        } else if (state is GoogleAuthUserNull) {
+          context.pop();
         }
       },
       child: Container(),

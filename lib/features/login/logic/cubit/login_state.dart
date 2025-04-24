@@ -22,3 +22,5 @@ final class ForgetPasswordErrorOccured extends LoginState {
   final String message;
   ForgetPasswordErrorOccured({required this.message});
 }
+
+final class GoogleAuthUserNull extends LoginState {}

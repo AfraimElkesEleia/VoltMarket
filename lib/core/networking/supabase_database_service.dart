@@ -17,4 +17,5 @@ class SupabaseDatabaseService {
       throw Exception('Failed to insert profile: $e');
     }
   }
+  
 }

@@ -42,5 +42,6 @@ class AppRouter {
       case MyRoutes.productsScreen:
         return MaterialPageRoute(builder: (_) => ProductsScreen());
     }
+    return null;
   }
 }

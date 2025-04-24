@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
-import 'package:volt_market/core/networking/supabase_service.dart';
+import 'package:volt_market/core/networking/supabase_database_service.dart';
 import 'package:volt_market/core/networking/supabase_storage_service.dart';
 import 'package:volt_market/features/signup/model/profile.dart';
 
