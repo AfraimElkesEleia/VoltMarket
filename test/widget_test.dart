@@ -7,13 +7,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:volt_market/main.dart';
+import 'package:volt_market/core/routing/app_router.dart';
+import 'package:volt_market/core/volt_market.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(VoltMarket(appRouter: AppRouter()));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
