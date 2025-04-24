@@ -23,7 +23,7 @@ void main() async {
     initialRoute = MyRoutes.onboardingScreen;
   } else {
     FirebaseAuth.instance.authStateChanges().listen((user) {
-      if (user == null || !user.emailVerified) {
+      if (user == null || !user.emailVerified ) {
         initialRoute = MyRoutes.loginScreen;
       } else {
         initialRoute = MyRoutes.productsScreen;

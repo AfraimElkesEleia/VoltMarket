@@ -1,19 +1,19 @@
 class Profile {
   final String uuid;
   final String name;
-  final String email;
-  final String address;
-  final String city;
-  final String zip;
+  final String? email;
+  final String? address;
+  final String? city;
+  final String? zip;
   final String imgProfile;
 
   Profile({
     required this.uuid,
     required this.name,
-    required this.email,
-    required this.address,
-    required this.city,
-    required this.zip,
+    this.email,
+    this.address,
+    this.city,
+    this.zip,
     required this.imgProfile,
   });
 

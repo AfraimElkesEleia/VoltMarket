@@ -24,7 +24,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _picker = ImagePicker();
-  void pickImage(BuildContext context) async {
+  Future<void> pickImage(BuildContext context) async {
     var pickedImage = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       if (pickedImage != null) {
