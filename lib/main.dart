@@ -26,7 +26,7 @@ void main() async {
       if (user == null || !user.emailVerified ) {
         initialRoute = MyRoutes.loginScreen;
       } else {
-        initialRoute = MyRoutes.productsScreen;
+        initialRoute = MyRoutes.mainScreen;
       }
     });
   }
