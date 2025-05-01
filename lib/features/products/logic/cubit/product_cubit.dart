@@ -102,7 +102,9 @@ class ProductCubit extends Cubit<ProductState> {
     try {
       emit(Loading());
       final categories = await _productService.getAllCategories();
-      emit(CategoriesLoaded(categories));
+      if (!isClosed) {
+        emit(CategoriesLoaded(categories));
+      }
     } catch (e) {
       emit(ProductError('Failed to fetch categories: ${e.toString()}'));
     }

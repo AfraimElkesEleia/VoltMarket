@@ -25,9 +25,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
-        if (state is CartLoading) {
-          return Center(child: CircularProgressIndicator());
-        } else if (state is CartUpdating) {
+        if (state is CartLoading || state is CartUpdating) {
           return Center(child: CircularProgressIndicator());
         } else if (state is CartError) {
           return Center(child: Text('There is error happened'));
