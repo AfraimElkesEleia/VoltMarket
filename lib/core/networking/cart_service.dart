@@ -1,140 +1,120 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CartService {
-  final SupabaseClient _supabase;
+  late final SupabaseClient _supabase;
 
-  CartService() : _supabase = Supabase.instance.client;
+  CartService() {
+    _supabase = Supabase.instance.client;
+  }
 
-  /// Adds a product variant to the cart (or updates quantity if already exists)
+  // Add item to cart
   Future<void> addToCart({
-    required String userId,
     required int productId,
-    required int productVariantId,
-    required int quantity,
-    required double price,
+    required String userId,
+    int? productVariantId,
+    int quantity = 1,
   }) async {
-    try {
-      // 1. Check if user has an active cart (pending order)
-      final activeOrderResponse =
-          await _supabase
-              .from('orders')
-              .select('id')
-              .eq('user_id', userId)
-              .eq('status', 'pending')
-              .maybeSingle();
-
-      int orderId;
-
-      // 2. If no active cart, create one
-      if (activeOrderResponse == null) {
-        final newOrderResponse =
-            await _supabase
-                .from('orders')
-                .insert({
-                  'user_id': userId,
-                  'total_amount': 0, // Updated by database trigger
-                  'status': 'pending',
-                })
-                .select('id')
-                .single();
-
-        orderId = newOrderResponse['id'] as int;
-      } else {
-        orderId = activeOrderResponse['id'] as int;
-      }
-
-      // 3. Check if item already exists in cart
-      final existingItemResponse =
-          await _supabase
-              .from('order_items')
-              .select('id, quantity')
-              .eq('order_id', orderId)
-              .eq('product_variant_id', productVariantId)
-              .maybeSingle();
-
-      if (existingItemResponse != null) {
-        // Update existing item
-        final newQuantity =
-            (existingItemResponse['quantity'] as int) + quantity;
+    final existingItem =
         await _supabase
-            .from('order_items')
-            .update({'quantity': newQuantity, 'total': newQuantity * price})
-            .eq('id', existingItemResponse['id']);
-      } else {
-        // Add new item to cart
-        await _supabase.from('order_items').insert({
-          'order_id': orderId,
-          'product_variant_id': productVariantId,
-          'quantity': quantity,
-          'price': price,
-          'total': quantity * price,
-        });
-      }
-    } catch (e) {
-      throw Exception('Failed to add to cart: $e');
+            .from('cart_items')
+            .select()
+            .eq('user_id', userId)
+            .eq('product_id', productId)
+            .maybeSingle();
+
+    if (existingItem != null) {
+      // Update quantity if item exists
+      await _supabase
+          .from('cart_items')
+          .update({
+            'quantity': existingItem['quantity'] + quantity,
+            'added_at': DateTime.now().toIso8601String(),
+          })
+          .eq('id', existingItem['id']);
+    } else {
+      // Add new item if it doesn't exist
+      await _supabase.from('cart_items').insert({
+        'user_id': userId,
+        'product_id': productId,
+        'product_variant_id': productVariantId,
+        'quantity': quantity,
+      });
     }
   }
 
-  /// Removes an item from the cart
-  Future<void> removeFromCart(int itemId) async {
-    try {
-      await _supabase.from('order_items').delete().eq('id', itemId);
-    } catch (e) {
-      throw Exception('Failed to remove from cart: $e');
-    }
+  // Remove item from cart
+  Future<void> removeFromCart(int cartItemId, String userId) async {
+    await _supabase
+        .from('cart_items')
+        .delete()
+        .eq('product_id', cartItemId)
+        .eq('user_id', userId);
   }
 
-  // /// Gets the total number of items in the cart
-  // Future<int> getCartItemsCount(String userId) async {
-  //   try {
-  //     final response = await _supabase
-  //         .from('orders')
-  //         .select('id')
-  //         .eq('user_id', userId)
-  //         .eq('status', 'pending')
-  //         .maybeSingle();
+  // Update item quantity in cart
+  Future<void> updateQuantity(
+    int cartItemId,
+    String userId,
+    int newQuantity,
+  ) async {
+    if (newQuantity <= 0) {
+      return removeFromCart(cartItemId, userId);
+    }
 
-  //     if (response == null) return 0;
+    await _supabase
+        .from('cart_items')
+        .update({'quantity': newQuantity})
+        .eq('id', cartItemId)
+        .eq('user_id', userId);
+  }
 
-  //     final orderId = response['id'] as int;
-  //     final itemsResponse = await _supabase
-  //   .from('order_items')
-  //   .select('id', const Options(head: false, count: CountOption.exact))
-  //   .eq('order_id', orderId)
-  //   .execute();
-
-  //     return itemsResponse.length ?? 0;
-  //   } catch (e) {
-  //     throw Exception('Failed to get cart count: $e');
-  //   }
-  // }
-
-  /// Fetches all items in the user's cart
+  // Get all cart items with product details
   Future<List<Map<String, dynamic>>> getCartItems(String userId) async {
-    try {
-      final orderResponse =
-          await _supabase
-              .from('orders')
-              .select('id')
-              .eq('user_id', userId)
-              .eq('status', 'pending')
-              .maybeSingle();
+    final response = await _supabase
+        .from('cart_items')
+        .select('''
+          *, 
+          products(*),
+          product_variants(*)
+        ''')
+        .eq('user_id', userId)
+        .order('added_at', ascending: false);
 
-      if (orderResponse == null) return [];
+    return response;
+  }
 
-      final orderId = orderResponse['id'] as int;
-      final itemsResponse = await _supabase
-          .from('order_items')
-          .select('''
-            *,
-            product_variants:product_variant_id(*),
-            products:product_variants!inner(product_id(*))
-          ''')
-          .eq('order_id', orderId);
+  // Get cart item count
+  Future<int> getCartItemCount(String userId) async {
+    final response = await _supabase
+        .from('cart_items')
+        .select('id')
+        .eq('user_id', userId);
 
-      return List<Map<String, dynamic>>.from(itemsResponse);
-    } catch (e) {
-      throw Exception('Failed to fetch cart items: $e');
+    return response.length;
+  }
+
+  // Clear entire cart
+  Future<void> clearCart(String userId) async {
+    await _supabase.from('cart_items').delete().eq('user_id', userId);
+  }
+
+  // Check if a product is in the cart
+  Future<bool> isProductInCart(
+    String userId,
+    int productId, {
+    int? variantId,
+  }) async {
+    final query = _supabase
+        .from('cart_items')
+        .select()
+        .eq('user_id', userId)
+        .eq('product_id', productId);
+
+    if (variantId != null) {
+      query.eq('product_variant_id', variantId);
     }
+
+    final response = await query.maybeSingle();
+    return response != null;
   }
 }

@@ -10,6 +10,13 @@ class FavouriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProductCubit, ProductState>(
+      buildWhen:
+          (previous, current) =>
+              current is ProductsLoaded ||
+              current is CategoryProductsLoaded ||
+              (current is ProductActionProcessing &&
+                  current.productId == product.id) ||
+              current is ProductError,
       builder: (context, state) {
         // Handle loading state for this specific product
         if (state is ProductActionProcessing &&

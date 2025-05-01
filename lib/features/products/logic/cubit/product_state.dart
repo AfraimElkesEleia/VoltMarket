@@ -49,6 +49,10 @@ final class FavoriteErrorOccured extends ProductState {}
 
 final class CartItemAdded extends ProductState {
   final int productId;
-  final int cartCount;
-  CartItemAdded(this.productId, this.cartCount);
+  CartItemAdded(this.productId);
 }
+final class CartItemRemoved extends ProductState {
+  final int productId;
+  CartItemRemoved(this.productId);
+}
+

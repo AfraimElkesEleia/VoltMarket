@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:volt_market/features/products/data/model/product.dart';
-import 'package:volt_market/features/products/logic/cubit/product_cubit.dart';
+import 'package:volt_market/features/products/ui/widgets/cart_button.dart';
 import 'package:volt_market/features/products/ui/widgets/favourite_button.dart';
 
 class ProductCard extends StatelessWidget {
@@ -72,10 +71,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     const Spacer(),
                     FavouriteButton(product: product),
-                    IconButton(
-                      icon: const Icon(Icons.add_shopping_cart, size: 16),
-                      onPressed: () {},
-                    ),
+                    CartButton(product: product),
                   ],
                 ),
               ],

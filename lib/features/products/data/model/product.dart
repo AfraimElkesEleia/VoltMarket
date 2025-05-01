@@ -9,7 +9,8 @@ class Product {
   final String? imgUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final bool isFavorite; // Add this field
+  final bool isFavorite;
+  final bool isInCart;
 
   Product({
     required this.id,
@@ -22,7 +23,8 @@ class Product {
     this.imgUrl,
     required this.createdAt,
     required this.updatedAt,
-    this.isFavorite = false, // Default to false
+    this.isFavorite = false,
+    this.isInCart = false,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -69,7 +71,8 @@ class Product {
     String? imgUrl,
     DateTime? createdAt,
     DateTime? updatedAt,
-    bool? isFavorite, // Add this
+    bool? isFavorite,
+    bool? isInCart,
   }) {
     return Product(
       id: id ?? this.id,
@@ -82,7 +85,8 @@ class Product {
       imgUrl: imgUrl ?? this.imgUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      isFavorite: isFavorite ?? this.isFavorite, // Include this
+      isFavorite: isFavorite ?? this.isFavorite,
+      isInCart: isInCart ?? this.isInCart,
     );
   }
 }

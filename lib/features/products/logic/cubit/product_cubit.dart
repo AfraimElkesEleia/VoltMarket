@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:volt_market/core/networking/cart_service.dart';
 import 'package:volt_market/core/networking/favourite_service.dart';
+import 'package:volt_market/features/products/data/model/cart_item.dart';
 import 'package:volt_market/features/products/data/model/category.dart';
 import 'package:volt_market/features/products/data/model/product.dart';
 import 'package:volt_market/features/products/data/service/product_service.dart';
@@ -11,12 +13,14 @@ part 'product_state.dart';
 class ProductCubit extends Cubit<ProductState> {
   late final ProductService _productService;
   late final FavoriteService _favoriteService;
+  late final CartService _cartService;
   late final User? _currentUser;
   List<Product> products = [];
   List<Category> categories = [];
   ProductCubit() : super(ProductInitial()) {
     _productService = ProductService();
     _favoriteService = FavoriteService();
+    _cartService = CartService();
     _currentUser = FirebaseAuth.instance.currentUser;
   }
 
@@ -38,7 +42,19 @@ class ProductCubit extends Cubit<ProductState> {
           return product.copyWith(isFavorite: isFav);
         }),
       );
-      emit(ProductsLoaded(products: productsWithFavorites));
+      final productsWithCartUpdate = await Future.wait(
+        productsWithFavorites.map((product) async {
+          final isInCart =
+              _currentUser != null
+                  ? await _cartService.isProductInCart(
+                    _currentUser.uid,
+                    product.id,
+                  )
+                  : false;
+          return product.copyWith(isInCart: isInCart);
+        }),
+      );
+      emit(ProductsLoaded(products: productsWithCartUpdate));
     } catch (e) {
       emit(ProductError('Failed to fetch products: ${e.toString()}'));
     }
@@ -62,7 +78,19 @@ class ProductCubit extends Cubit<ProductState> {
           return product.copyWith(isFavorite: isFav);
         }),
       );
-      emit(ProductsLoaded(products: productsWithFavorites));
+      final productsWithCartUpdate = await Future.wait(
+        productsWithFavorites.map((product) async {
+          final isInCart =
+              _currentUser != null
+                  ? await _cartService.isProductInCart(
+                    _currentUser.uid,
+                    product.id,
+                  )
+                  : false;
+          return product.copyWith(isInCart: isInCart);
+        }),
+      );
+      emit(ProductsLoaded(products: productsWithCartUpdate));
     } catch (e) {
       emit(ProductError('Failed to fetch category products: ${e.toString()}'));
     }
@@ -104,39 +132,89 @@ class ProductCubit extends Cubit<ProductState> {
     if (_currentUser == null) return;
 
     try {
-      // Get current state
-      if (state is! ProductsLoaded) return;
       final currentState = state as ProductsLoaded;
+      // DO NOT emit yet. Save product list before emitting.
+      final updatedProducts =
+          currentState.products.map((p) {
+            if (p.id == productId) {
+              return p.copyWith(isFavorite: !p.isFavorite);
+            }
+            return p;
+          }).toList();
 
-      // Find the product and its current favorite status
-      final product = currentState.products.firstWhere(
-        (p) => p.id == productId,
-        orElse: () => throw Exception('Product not found'),
-      );
-
-      // Show loading immediately
+      // Now emit the loading indicator
       emit(
-        ProductActionProcessing(productId: productId, isFavoriteAction: true),
+        ProductActionProcessing(
+          productId: productId,
+          isFavoriteAction: true,
+          isCartAction: false,
+        ),
       );
-
-      // Toggle in backend
-      if (product.isFavorite) {
+      final bool isFavorite = await _favoriteService.isFavorite(
+        _currentUser.uid,
+        productId,
+      );
+      // Call backend
+      if (isFavorite) {
         await _favoriteService.removeFromFavorites(_currentUser.uid, productId);
       } else {
         await _favoriteService.addToFavorites(_currentUser.uid, productId);
       }
 
-      // Update UI with new state
-      final updatedProducts =
-          currentState.products.map((p) {
-            return p.id == productId
-                ? p.copyWith(isFavorite: !p.isFavorite)
-                : p;
-          }).toList();
-
+      // Now emit the final updated state using saved updatedProducts
       emit(ProductsLoaded(products: updatedProducts));
     } catch (e) {
-      emit(ProductError('Failed to toggle favorite'));
+      emit(ProductError('Failed to toggle favorite ${e.toString()}'));
+    }
+  }
+
+  Future<void> toggleCartItem({required Product product}) async {
+    if (_currentUser == null) {
+      emit(ProductError('Please login to manage your cart'));
+      return;
+    }
+
+    final isInCart = product.isInCart;
+
+    try {
+      // ✅ Extract current product list before emitting new state
+      if (state is! ProductsLoaded) return;
+      final currentState = state as ProductsLoaded;
+      final currentProducts = currentState.products;
+
+      // ⏳ Emit loading state
+      emit(
+        ProductActionProcessing(
+          productId: product.id,
+          isCartAction: true,
+          isFavoriteAction: false,
+        ),
+      );
+
+      // 🔁 Toggle cart status in backend
+      if (isInCart) {
+        await _cartService.removeFromCart(product.id, _currentUser.uid);
+      } else {
+        await _cartService.addToCart(
+          productId: product.id,
+          userId: _currentUser.uid,
+          quantity: 1,
+        );
+      }
+
+      // 🛠️ Update the product locally
+      final updatedProducts =
+          currentProducts.map((p) {
+            if (p.id == product.id) {
+              return p.copyWith(isInCart: !p.isInCart); // ✅ Correct field
+            }
+            return p;
+          }).toList();
+
+      // ✅ Emit updated product list
+      emit(ProductsLoaded(products: updatedProducts));
+    } catch (e) {
+      emit(ProductError('Failed to toggle cart item: ${e.toString()}'));
     }
   }
 }
