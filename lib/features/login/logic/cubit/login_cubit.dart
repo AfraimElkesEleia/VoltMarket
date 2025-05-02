@@ -4,7 +4,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:volt_market/core/networking/supabase_database_service.dart';
 import 'package:volt_market/features/login/helper/facebook_auth_service.dart';
@@ -126,9 +125,11 @@ class LoginCubit extends Cubit<LoginState> {
       if (isNewUser) {
         final userData = await facebookAuthService.getCurrentUserData();
         debugPrint(userData.toString());
-        final String name = userData!['name']??'';
-        final String email = userData['email']??'';
-        final String imageUrl = userData['picture']['data']['url']??'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTcvh7Ca8__Pj5OQDdGii_3ucmXdgw-XsQf-glPYClSoDgbkl41';
+        final String name = userData!['name'] ?? '';
+        final String email = userData['email'] ?? '';
+        final String imageUrl =
+            userData['picture']['data']['url'] ??
+            'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTcvh7Ca8__Pj5OQDdGii_3ucmXdgw-XsQf-glPYClSoDgbkl41';
 
         await SupabaseDatabaseService().insertUserProfile(
           Profile(

@@ -25,17 +25,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                ColorsManager.lightShade,
-                ColorsManager.darkBlueViolet,
-                ColorsManager.lightPurple,
-              ],
-            ),
-          ),
+          decoration: BoxDecoration(gradient: ColorsManager.primaryGradient),
           child: Column(
             children: [
               Expanded(
