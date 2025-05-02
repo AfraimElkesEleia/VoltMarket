@@ -4,8 +4,12 @@ import 'package:volt_market/core/routing/my_routes.dart';
 import 'package:volt_market/features/login/logic/cubit/login_cubit.dart';
 import 'package:volt_market/features/login/ui/screens/forget_password_screen.dart';
 import 'package:volt_market/features/login/ui/screens/login_screen.dart';
+import 'package:volt_market/features/main/navigation_screen.dart';
 import 'package:volt_market/features/onboarding/screens/onboarding_screen.dart';
-import 'package:volt_market/features/products/products_screen.dart';
+import 'package:volt_market/features/orders/logic/cubit/order_cubit.dart';
+import 'package:volt_market/features/orders/ui/screens/order_screen.dart';
+import 'package:volt_market/features/products/logic/cubit/product_cubit.dart';
+import 'package:volt_market/features/products/ui/screens/products_screen.dart';
 import 'package:volt_market/features/signup/logic/cubit/signup_cubit.dart';
 import 'package:volt_market/features/signup/ui/screens/signup_screen.dart';
 
@@ -39,8 +43,16 @@ class AppRouter {
                 child: ForgetPasswordScreen(),
               ),
         );
-      case MyRoutes.productsScreen:
-        return MaterialPageRoute(builder: (_) => ProductsScreen());
+      case MyRoutes.mainScreen:
+        return MaterialPageRoute(builder: (_) => MainScreen());
+      case MyRoutes.myOrdersScreen:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+                create: (context) => OrderCubit(),
+                child: OrdersScreen(),
+              ),
+        );
     }
     return null;
   }

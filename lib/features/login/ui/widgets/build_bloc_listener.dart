@@ -55,7 +55,7 @@ class BuildBlocListener extends StatelessWidget {
         } else if (state is SinginSuccess) {
           debugPrint('LOGIN DONE');
           context.pop();
-          context.pushReplacementNamed(MyRoutes.productsScreen);
+          context.pushReplacementNamed(MyRoutes.mainScreen);
         } else if (state is ResetPasswordEmailIsSent) {
           context.pop();
           showSnackBar(context, 'Check your email 👌', Colors.green);

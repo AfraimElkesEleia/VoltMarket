@@ -4,4 +4,5 @@ abstract class ImageManager {
   static const kIntroThirdScreen = 'assets/images/intro_third_screen.png';
   static const googleIcon = 'assets/images/google_icon.png';
   static const noProfilePic = 'assets/images/no_profile.png';
+  static const noOrdersFound = 'assets/images/no_orders.png';
 }
