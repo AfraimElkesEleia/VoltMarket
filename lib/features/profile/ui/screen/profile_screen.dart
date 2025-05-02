@@ -40,12 +40,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Profile'), elevation: 0),
       body: BlocConsumer<ProfileCubit, ProfileState>(
-        buildWhen: (previous, current) => (current is! LoggedOut),
+        buildWhen:
+            (previous, current) =>
+                (current is Loading) ||
+                current is ProfileError ||
+                current is ProfileLoaded,
         listener: (context, state) {
           if (state is LoggedOut) {
             context.pushNamedAndRemoveUntil(
               MyRoutes.loginScreen,
               (route) => false,
+            );
+          } else if (state is RequestPermission) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Please enable location permission'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          } else if (state is NetworkError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error in Network Conection'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          } else if (state is ErrorGps) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Error while trying get location: ${state.message}',
+                ),
+                backgroundColor: Colors.red,
+              ),
             );
           }
         },

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart';
+import 'package:volt_market/features/profile/logic/cubit/profile_cubit.dart';
 import 'package:volt_market/features/signup/model/profile.dart';
 
 class ProfileCard extends StatelessWidget {
   final Profile? profile;
   const ProfileCard({super.key, required this.profile});
 
-  void _getCurrentLocation() async {
+  void _getCurrentLocation(BuildContext context) async {
     // Implement GPS functionality
     // You can use location package for this
-    print("GPS functionality will be implemented here");
+    context.read<ProfileCubit>().getCurrentLocation();
   }
 
   @override
@@ -32,7 +35,7 @@ class ProfileCard extends StatelessWidget {
                 icon: Icon(Icons.gps_fixed, color: Colors.blue),
                 onPressed: () {
                   // GPS functionality
-                  _getCurrentLocation();
+                  _getCurrentLocation(context);
                 },
               ),
             ),
