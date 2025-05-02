@@ -1,9 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import 'package:volt_market/core/networking/cart_service.dart';
 import 'package:volt_market/core/networking/favourite_service.dart';
-import 'package:volt_market/features/products/data/model/cart_item.dart';
 import 'package:volt_market/features/products/data/model/category.dart';
 import 'package:volt_market/features/products/data/model/product.dart';
 import 'package:volt_market/features/products/data/service/product_service.dart';
@@ -54,7 +53,9 @@ class ProductCubit extends Cubit<ProductState> {
           return product.copyWith(isInCart: isInCart);
         }),
       );
-      emit(ProductsLoaded(products: productsWithCartUpdate));
+      if (!isClosed) {
+        emit(ProductsLoaded(products: productsWithCartUpdate));
+      }
     } catch (e) {
       emit(ProductError('Failed to fetch products: ${e.toString()}'));
     }
@@ -101,7 +102,9 @@ class ProductCubit extends Cubit<ProductState> {
     try {
       emit(Loading());
       final categories = await _productService.getAllCategories();
-      emit(CategoriesLoaded(categories));
+      if (!isClosed) {
+        emit(CategoriesLoaded(categories));
+      }
     } catch (e) {
       emit(ProductError('Failed to fetch categories: ${e.toString()}'));
     }

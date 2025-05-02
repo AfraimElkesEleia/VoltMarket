@@ -64,7 +64,7 @@ class CartService {
     await _supabase
         .from('cart_items')
         .update({'quantity': newQuantity})
-        .eq('id', cartItemId)
+        .eq('product_id', cartItemId)
         .eq('user_id', userId);
   }
 

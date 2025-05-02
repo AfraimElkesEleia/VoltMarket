@@ -51,8 +51,8 @@ final class CartItemAdded extends ProductState {
   final int productId;
   CartItemAdded(this.productId);
 }
+
 final class CartItemRemoved extends ProductState {
   final int productId;
   CartItemRemoved(this.productId);
 }
-

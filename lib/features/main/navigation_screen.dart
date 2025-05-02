@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:volt_market/features/cart/logic/cubit/cart_cubit.dart';
+import 'package:volt_market/features/cart/ui/screen/cart_screen.dart';
 import 'package:volt_market/features/products/logic/cubit/product_cubit.dart';
 import 'package:volt_market/features/products/ui/screens/products_screen.dart';
 
@@ -18,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
       create: (context) => ProductCubit(),
       child: const ProductsScreen(),
     ),
-    const CartScreen(),
+    BlocProvider(create: (context) =>CartCubit(), child: const CartScreen()),
     const FavoritesScreen(),
     const ProfileScreen(),
   ];
@@ -42,16 +44,6 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     );
-  }
-}
-
-//* *********************************************** *//
-class CartScreen extends StatelessWidget {
-  const CartScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Cart Screen'));
   }
 }
 
