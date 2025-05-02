@@ -6,6 +6,8 @@ import 'package:volt_market/features/favourites/logic/cubit/favorite_cubit.dart'
 import 'package:volt_market/features/favourites/ui/screens/favorite_screen.dart';
 import 'package:volt_market/features/products/logic/cubit/product_cubit.dart';
 import 'package:volt_market/features/products/ui/screens/products_screen.dart';
+import 'package:volt_market/features/profile/logic/cubit/profile_cubit.dart';
+import 'package:volt_market/features/profile/ui/screen/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -27,7 +29,10 @@ class _MainScreenState extends State<MainScreen> {
       create: (context) => FavoriteCubit(),
       child: const FavouriteScreen(),
     ),
-    const ProfileScreen(),
+    BlocProvider(
+      create: (context) => ProfileCubit(),
+      child: const ProfileScreen(),
+    ),
   ];
 
   @override
@@ -49,14 +54,5 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     );
-  }
-}
-
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Profile Screen'));
   }
 }
