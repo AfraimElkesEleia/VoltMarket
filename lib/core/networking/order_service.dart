@@ -77,16 +77,15 @@ class OrderService {
     final response = await _supabase
         .from('orders')
         .select('''
+      *,
+      order_items(
         *,
-        order_items(
-          *,
-          products(*),
-          product_variants(*)
-        )
-      ''')
+        products(*)
+      )
+    ''')
         .eq('user_id', userId)
         .order('order_date', ascending: false);
 
-    return response;
+    return List<Map<String, dynamic>>.from(response);
   }
 }
