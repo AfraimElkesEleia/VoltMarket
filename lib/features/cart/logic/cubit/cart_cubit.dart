@@ -18,7 +18,9 @@ class CartCubit extends Cubit<CartState> {
     try {
       final response = await _cartService.getCartItems(_currentUser!.uid);
       final items = response.map((item) => CartItem.fromMap(item)).toList();
-      emit(CartLoaded(items: items));
+      if (!isClosed) {
+        emit(CartLoaded(items: items));
+      }
     } catch (e) {
       emit(CartError(message: 'Failed to load cart: ${e.toString()}'));
     }
