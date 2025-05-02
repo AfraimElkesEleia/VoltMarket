@@ -14,23 +14,53 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   List<CartItem> cartItems = [];
+  bool isUpdating = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     context.read<CartCubit>().loadCart();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartCubit, CartState>(
+    return BlocConsumer<CartCubit, CartState>(
+      buildWhen:
+          (previous, current) =>
+              current is CartError ||
+              current is CartLoaded ||
+              current is CartUpdating,
+      listener: (context, state) {
+        if (state is CartRemoving || state is CartUpdating) {
+          isUpdating = true;
+        } else if (state is OrderIsDone) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Your order has been placed successfully! 🎉"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (state is CartIsEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                "Oops! You need to add something to your cart first",
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (state is CartLoaded || state is OrderIsDone) {
+          isUpdating = false;
+        }
+      },
       builder: (context, state) {
-        if (state is CartLoading || state is CartUpdating) {
+        if (state is CartLoading) {
           return Center(child: CircularProgressIndicator());
         } else if (state is CartError) {
           return Center(child: Text('There is error happened'));
         }
-        cartItems = (state as CartLoaded).items;
+        if (state is CartLoaded) {
+          cartItems = state.items;
+        }
         return SafeArea(
           child: Scaffold(
             body: Column(
@@ -112,14 +142,19 @@ class _CartScreenState extends State<CartScreen> {
                             ), // Slightly rounded corners
                           ),
                         ),
-                        onPressed: () {},
-                        child: Text(
-                          "Proceed to Buy (${context.read<CartCubit>().totalPrice})",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        onPressed: () {
+                          context.read<CartCubit>().createOrderFromCart();
+                        },
+                        child:
+                            isUpdating
+                                ? CircularProgressIndicator()
+                                : Text(
+                                  "Proceed to Buy (\$${context.read<CartCubit>().totalPrice})",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                       ),
                     ),
                   ),

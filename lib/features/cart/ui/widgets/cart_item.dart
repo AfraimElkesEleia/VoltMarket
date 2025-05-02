@@ -6,7 +6,6 @@ class CartItemWidget extends StatelessWidget {
   final VoidCallback onAdd;
   final VoidCallback onSubtract;
   final VoidCallback removeItem;
-
   const CartItemWidget({
     required this.item,
     required this.onAdd,

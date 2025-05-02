@@ -1,15 +1,18 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:volt_market/core/networking/cart_service.dart';
+import 'package:volt_market/core/networking/order_service.dart';
 import 'package:volt_market/features/cart/model/cart_item.dart';
 import 'package:volt_market/features/cart/logic/cubit/cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
   late final CartService _cartService;
+  late final OrderService _orderService;
   late final User? _currentUser;
 
   CartCubit() : super(CartInitial()) {
     _cartService = CartService();
+    _orderService = OrderService();
     _currentUser = FirebaseAuth.instance.currentUser;
   }
 
@@ -30,7 +33,7 @@ class CartCubit extends Cubit<CartState> {
     if (state is! CartLoaded) return;
 
     final currentItems = (state as CartLoaded).items;
-    emit(CartUpdating(items: currentItems));
+    emit(CartRemoving());
 
     try {
       await _cartService.removeFromCart(cartItemId, _currentUser!.uid);
@@ -49,7 +52,7 @@ class CartCubit extends Cubit<CartState> {
     if (state is! CartLoaded) return;
 
     final currentItems = (state as CartLoaded).items;
-    emit(CartUpdating(items: currentItems));
+    emit(CartUpdating());
 
     try {
       await _cartService.updateQuantity(
@@ -72,7 +75,7 @@ class CartCubit extends Cubit<CartState> {
     if (state is! CartLoaded) return;
 
     final currentItems = (state as CartLoaded).items;
-    emit(CartUpdating(items: currentItems));
+    emit(CartLoaded(items: currentItems));
 
     try {
       await _cartService.clearCart(userId);
@@ -93,5 +96,30 @@ class CartCubit extends Cubit<CartState> {
       0.0,
       (sum, item) => sum + item.totalPrice,
     );
+  }
+
+  /// 🔥 Create order and clear cart if successful
+  Future<void> createOrderFromCart() async {
+    if (_currentUser == null) return;
+
+    final items = (state as CartLoaded).items;
+    if (items.isEmpty) {
+      emit(CartIsEmpty());
+      return;
+    } // 🛑 Do nothing if cart is empty
+    try {
+      emit(CartUpdating());
+      await _orderService.createOrder();
+      await _cartService.clearCart(_currentUser.uid);
+      emit(OrderIsDone());
+      await loadCart(); // reload empty cart
+    } catch (e) {
+      emit(
+        CartError(
+          message: 'Failed to create order: ${e.toString()}',
+          items: items,
+        ),
+      );
+    }
   }
 }

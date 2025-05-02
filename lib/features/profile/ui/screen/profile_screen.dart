@@ -9,6 +9,7 @@ import 'package:volt_market/core/helper/app_regex.dart';
 import 'package:volt_market/core/helper/navigation_helper.dart';
 import 'package:volt_market/core/routing/my_routes.dart';
 import 'package:volt_market/features/profile/logic/cubit/profile_cubit.dart';
+import 'package:volt_market/features/profile/ui/widget/my_orders_button.dart';
 import 'package:volt_market/features/profile/ui/widget/profile_card.dart';
 import 'package:volt_market/features/signup/model/profile.dart'; // For using SVG icons
 
@@ -140,6 +141,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ProfileCard(profile: profile),
                 SizedBox(height: 30),
                 // Logout Button
+                MyOrdersButton(),
+                SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
