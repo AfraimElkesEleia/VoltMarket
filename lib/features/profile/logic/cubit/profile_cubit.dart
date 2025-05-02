@@ -1,10 +1,14 @@
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:volt_market/core/networking/supabase_database_service.dart';
 import 'package:volt_market/core/networking/supabase_storage_service.dart';
 import 'package:volt_market/features/signup/model/profile.dart';
@@ -116,6 +120,72 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(LoggedOut());
     } catch (e) {
       emit(ProfileError('Failed to logout'));
+    }
+  }
+
+  // * Upadte Location */
+  Future<void> getCurrentLocation() async {
+    // Check internet connection
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('No internet connection')),
+      // );
+      emit(NetworkError());
+      return;
+    }
+
+    // Check location permission
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // ScaffoldMessenger.of(
+        //   context,
+        // ).showSnackBar(SnackBar(content: Text('Location permission denied')));
+        emit(RequestPermission());
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Location permission permanently denied')),
+      // );
+      openAppSettings(); // From permission_handler
+      return;
+    }
+
+    // Check if location services are enabled
+    bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isLocationEnabled) {
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(SnackBar(content: Text('Please enable GPS')));
+      await Geolocator.openLocationSettings();
+      return;
+    }
+
+    try {
+      emit(Loading());
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Optionally use geocoding to get address
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      Placemark place = placemarks.first;
+
+      String address =
+          '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+      await _service.updateUserAddress(address);
+      await _service.updateUserCity(place.locality ?? 'Not Found');
+      await fetchProfile();
+    } catch (e) {
+      emit(ErrorGps(message: e.toString()));
     }
   }
 }
