@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:volt_market/core/constants/categories_icons.dart';
 import 'package:volt_market/core/constants/image_manager.dart';
-import 'package:volt_market/core/helper/device_utils.dart';
 import 'package:volt_market/core/helper/navigation_helper.dart';
 import 'package:volt_market/core/routing/my_routes.dart';
 import 'package:volt_market/features/products/data/model/product.dart';
@@ -83,7 +82,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             height: 100,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: state.categories.length + 1, // +1 for "All" option
+              itemCount: context.read<ProductCubit>().categories.length + 1, // +1 for "All" option
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return Padding(
@@ -108,7 +107,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   );
                 }
 
-                final category = state.categories[index - 1];
+                final category =
+                    context.read<ProductCubit>().categories[index - 1];
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Column(
@@ -163,9 +163,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         List<Product> products = [];
 
         if (state is ProductsLoaded) {
-          products = state.products;
-        } else if (state is CategoryProductsLoaded) {
-          products = state.products;
+          products = context.read<ProductCubit>().products;
         } else {
           return const SliverToBoxAdapter(
             child: Center(child: Text('No products to display')),
