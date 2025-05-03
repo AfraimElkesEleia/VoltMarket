@@ -14,18 +14,19 @@ class CartLoading extends CartState {
   const CartLoading();
 }
 
-class CartLoaded extends CartState {
-  final List<CartItem> items;
+class CartLoaded extends CartState {}
 
-  const CartLoaded({required this.items});
-}
-class CartRemoving extends CartState{}
-class CartUpdating extends CartState{}
+class CartRemoving extends CartState {}
+
+class CartUpdating extends CartState {}
+
 class CartError extends CartState {
   final String message;
   final List<CartItem>? items;
 
   const CartError({required this.message, this.items});
 }
-class OrderIsDone extends CartState{}
-class CartIsEmpty extends CartState{}
+
+class OrderIsDone extends CartState {}
+
+class CartIsEmpty extends CartState {}

@@ -251,20 +251,15 @@ class ProductCubit extends Cubit<ProductState> {
     try {
       emit(Loading());
       await _reviewService.submitReview(productId: productId, rating: rating);
+      final productsWithRatings = await Future.wait(
+        products.map((product) async {
+          final avgRating = await _reviewService.getAverageRating(product.id);
+          return product.copyWith(rating: avgRating);
+        }),
+      );
+      products = productsWithRatings;
 
-      // Refresh product rating
-      final updatedRating = await _reviewService.getAverageRating(productId);
-
-      // Update product in local state if ProductsLoaded
-      final updatedProducts =
-          products.map((product) {
-            if (product.id == productId) {
-              return product.copyWith(rating: updatedRating);
-            }
-            return product;
-          }).toList();
-
-      emit(ProductsLoaded(products: updatedProducts));
+      emit(ProductsLoaded(products: productsWithRatings));
     } catch (e) {
       emit(ProductError('Failed to submit rating: ${e.toString()}'));
     }

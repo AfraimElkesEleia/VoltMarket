@@ -9,7 +9,7 @@ class CartCubit extends Cubit<CartState> {
   late final CartService _cartService;
   late final OrderService _orderService;
   late final User? _currentUser;
-
+  List<CartItem> items = [];
   CartCubit() : super(CartInitial()) {
     _cartService = CartService();
     _orderService = OrderService();
@@ -20,9 +20,9 @@ class CartCubit extends Cubit<CartState> {
     emit(CartLoading());
     try {
       final response = await _cartService.getCartItems(_currentUser!.uid);
-      final items = response.map((item) => CartItem.fromMap(item)).toList();
+      items = response.map((item) => CartItem.fromMap(item)).toList();
       if (!isClosed) {
-        emit(CartLoaded(items: items));
+        emit(CartLoaded());
       }
     } catch (e) {
       emit(CartError(message: 'Failed to load cart: ${e.toString()}'));
@@ -32,7 +32,7 @@ class CartCubit extends Cubit<CartState> {
   Future<void> removeFromCart(int cartItemId) async {
     if (state is! CartLoaded) return;
 
-    final currentItems = (state as CartLoaded).items;
+    final currentItems = items;
     emit(CartRemoving());
 
     try {
@@ -51,7 +51,7 @@ class CartCubit extends Cubit<CartState> {
   Future<void> updateQuantity(int cartItemId, int newQuantity) async {
     if (state is! CartLoaded) return;
 
-    final currentItems = (state as CartLoaded).items;
+    final currentItems = items;
     emit(CartUpdating());
 
     try {
@@ -74,12 +74,13 @@ class CartCubit extends Cubit<CartState> {
   Future<void> clearCart(String userId) async {
     if (state is! CartLoaded) return;
 
-    final currentItems = (state as CartLoaded).items;
-    emit(CartLoaded(items: currentItems));
+    final currentItems = items;
+    emit(CartLoaded());
 
     try {
       await _cartService.clearCart(userId);
-      emit(CartLoaded(items: []));
+      items = [];
+      emit(CartLoaded());
     } catch (e) {
       emit(
         CartError(
@@ -92,7 +93,7 @@ class CartCubit extends Cubit<CartState> {
 
   double get totalPrice {
     if (state is! CartLoaded) return 0.0;
-    return (state as CartLoaded).items.fold(
+    return items.fold(
       0.0,
       (sum, item) => sum + item.totalPrice,
     );
@@ -101,8 +102,6 @@ class CartCubit extends Cubit<CartState> {
   /// 🔥 Create order and clear cart if successful
   Future<void> createOrderFromCart() async {
     if (_currentUser == null) return;
-
-    final items = (state as CartLoaded).items;
     if (items.isEmpty) {
       emit(CartIsEmpty());
       return;
