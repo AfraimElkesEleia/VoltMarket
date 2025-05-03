@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:volt_market/core/helper/device_utils.dart';
 import 'package:volt_market/features/cart/model/cart_item.dart';
 
 class CartItemWidget extends StatelessWidget {
@@ -20,13 +21,14 @@ class CartItemWidget extends StatelessWidget {
   //============================
   @override
   Widget build(BuildContext context) {
+    final darkmode = DeviceUtils.isDarkMode(context);
     return Card(
-      color: Color.fromARGB(255, 32, 29, 56),
+      color: darkmode ? Color(0xFF4E47A1) : Color.fromARGB(255, 32, 29, 56),
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Padding(
         padding: EdgeInsets.all(10),
         child: Container(
-          color: Color.fromARGB(255, 32, 29, 56),
+          color: darkmode ? Color(0xFF4E47A1) : Color.fromARGB(255, 32, 29, 56),
           child: Row(
             children: [
               // Image Settings Here
@@ -67,11 +69,8 @@ class CartItemWidget extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      item.product.price.toString(),
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 76, 61, 216),
-                        fontSize: 14,
-                      ),
+                      '\$${item.product.price.toString()}',
+                      style: TextStyle(color: Color(0xFFEDEDED), fontSize: 14),
                     ),
                   ],
                 ),
