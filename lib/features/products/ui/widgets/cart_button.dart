@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:volt_market/core/helper/device_utils.dart';
 import 'package:volt_market/features/products/data/model/product.dart';
 import 'package:volt_market/features/products/logic/cubit/product_cubit.dart';
 
@@ -17,13 +18,15 @@ class CartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final darkmode = DeviceUtils.isDarkMode(context);
     return BlocBuilder<ProductCubit, ProductState>(
-      buildWhen: (previous, current) =>
-    current is ProductsLoaded ||
-    current is CategoryProductsLoaded ||
-    (current is ProductActionProcessing &&
-        current.productId == product.id) ||
-    current is ProductError,
+      buildWhen:
+          (previous, current) =>
+              current is ProductsLoaded ||
+              current is CategoryProductsLoaded ||
+              (current is ProductActionProcessing &&
+                  current.productId == product.id) ||
+              current is ProductError,
       builder: (context, state) {
         // Handle loading state
         if (state is ProductActionProcessing &&
@@ -51,7 +54,12 @@ class CartButton extends StatelessWidget {
           icon: Icon(
             isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
             size: 16,
-            color: isInCart ? Colors.blue : Colors.black,
+            color:
+                isInCart
+                    ? darkmode
+                        ? Colors.white
+                        : Colors.blue
+                    : Colors.blue,
           ),
           onPressed:
               () =>

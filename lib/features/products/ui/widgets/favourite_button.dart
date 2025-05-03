@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:volt_market/core/helper/device_utils.dart';
 import 'package:volt_market/features/products/data/model/product.dart';
 import 'package:volt_market/features/products/logic/cubit/product_cubit.dart';
 
@@ -9,6 +10,7 @@ class FavouriteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final darkmode = DeviceUtils.isDarkMode(context);
     return BlocBuilder<ProductCubit, ProductState>(
       buildWhen:
           (previous, current) =>
@@ -44,7 +46,7 @@ class FavouriteButton extends StatelessWidget {
           icon: Icon(
             isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
             size: 16,
-            color: isFavorite ? Colors.red : Colors.black,
+            color: isFavorite ? Colors.red : Colors.blue,
           ),
           onPressed:
               () => context.read<ProductCubit>().toggleFavorite(product.id),
