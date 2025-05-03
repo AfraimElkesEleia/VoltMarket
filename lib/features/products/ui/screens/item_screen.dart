@@ -20,14 +20,14 @@ class Itemdetails extends StatelessWidget {
           // Get the latest version of the product from state
           Product currentProduct = product;
 
-          if (state is ProductsLoaded) {
-            final updated = state.products.firstWhere(
+          
+            final updated = context.read<ProductCubit>().products.firstWhere(
               (p) => p.id == product.id,
             );
             currentProduct = updated;
             context.read<ProductCubit>().currentProduct = currentProduct;
             context.read<ProductCubit>().productRating = product.rating;
-          }
+          
 
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),

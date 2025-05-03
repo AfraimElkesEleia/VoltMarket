@@ -9,22 +9,9 @@ final class Loading extends ProductState {}
 
 final class CategoriesIsLoading extends ProductState {}
 
-final class ProductsLoaded extends ProductState {
-  late final List<Product> products;
-  ProductsLoaded({required this.products});
-}
+final class ProductsLoaded extends ProductState {}
 
-final class CategoryProductsLoaded extends ProductState {
-  final List<Product> products;
-
-  CategoryProductsLoaded({required this.products});
-}
-
-final class CategoriesLoaded extends ProductState {
-  final List<Category> categories;
-
-  CategoriesLoaded(this.categories);
-}
+final class CategoriesLoaded extends ProductState {}
 
 final class ProductError extends ProductState {
   final String message;
@@ -43,16 +30,4 @@ final class ProductActionProcessing extends ProductState {
     this.isFavoriteAction = false,
     this.isCartAction = false,
   });
-}
-
-final class FavoriteErrorOccured extends ProductState {}
-
-final class CartItemAdded extends ProductState {
-  final int productId;
-  CartItemAdded(this.productId);
-}
-
-final class CartItemRemoved extends ProductState {
-  final int productId;
-  CartItemRemoved(this.productId);
 }

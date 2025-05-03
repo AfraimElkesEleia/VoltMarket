@@ -66,7 +66,7 @@ class ProductCubit extends Cubit<ProductState> {
       );
       products = productsWithRatings;
       if (!isClosed) {
-        emit(ProductsLoaded(products: productsWithRatings));
+        emit(ProductsLoaded());
       }
     } catch (e) {
       emit(ProductError('Failed to fetch products: ${e.toString()}'));
@@ -111,7 +111,7 @@ class ProductCubit extends Cubit<ProductState> {
       );
       products = productsWithRatings;
       if (!isClosed) {
-        emit(ProductsLoaded(products: productsWithRatings));
+        emit(ProductsLoaded());
       }
     } catch (e) {
       emit(ProductError('Failed to fetch category products: ${e.toString()}'));
@@ -124,7 +124,7 @@ class ProductCubit extends Cubit<ProductState> {
       emit(Loading());
       categories = await _productService.getAllCategories();
       if (!isClosed) {
-        emit(CategoriesLoaded(categories));
+        emit(CategoriesLoaded());
       }
     } catch (e) {
       emit(ProductError('Failed to fetch categories: ${e.toString()}'));
@@ -156,10 +156,8 @@ class ProductCubit extends Cubit<ProductState> {
     if (_currentUser == null) return;
 
     try {
-      final currentState = state as ProductsLoaded;
-      // DO NOT emit yet. Save product list before emitting.
       final updatedProducts =
-          currentState.products.map((p) {
+          products.map((p) {
             if (p.id == productId) {
               return p.copyWith(isFavorite: !p.isFavorite);
             }
@@ -185,8 +183,8 @@ class ProductCubit extends Cubit<ProductState> {
         await _favoriteService.addToFavorites(_currentUser.uid, productId);
       }
       debugPrint('Toggle done');
-      // Now emit the final updated state using saved updatedProducts
-      emit(ProductsLoaded(products: updatedProducts));
+      products = updatedProducts;
+      emit(ProductsLoaded());
     } catch (e) {
       debugPrint('Toggle not done ${e.toString()}');
 
@@ -203,10 +201,7 @@ class ProductCubit extends Cubit<ProductState> {
     final isInCart = product.isInCart;
 
     try {
-      // ✅ Extract current product list before emitting new state
-      if (state is! ProductsLoaded) return;
-      final currentState = state as ProductsLoaded;
-      final currentProducts = currentState.products;
+      final currentProducts = products;
 
       // ⏳ Emit loading state
       emit(
@@ -236,9 +231,9 @@ class ProductCubit extends Cubit<ProductState> {
             }
             return p;
           }).toList();
-
+      products = updatedProducts;
       // ✅ Emit updated product list
-      emit(ProductsLoaded(products: updatedProducts));
+      emit(ProductsLoaded());
     } catch (e) {
       emit(ProductError('Failed to toggle cart item: ${e.toString()}'));
     }
@@ -259,7 +254,7 @@ class ProductCubit extends Cubit<ProductState> {
       );
       products = productsWithRatings;
 
-      emit(ProductsLoaded(products: productsWithRatings));
+      emit(ProductsLoaded());
     } catch (e) {
       emit(ProductError('Failed to submit rating: ${e.toString()}'));
     }
