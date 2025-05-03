@@ -163,10 +163,12 @@ class ProductCubit extends Cubit<ProductState> {
       } else {
         await _favoriteService.addToFavorites(_currentUser.uid, productId);
       }
-
+      debugPrint('Toggle done');
       // Now emit the final updated state using saved updatedProducts
       emit(ProductsLoaded(products: updatedProducts));
     } catch (e) {
+      debugPrint('Toggle not done ${e.toString()}');
+
       emit(ProductError('Failed to toggle favorite ${e.toString()}'));
     }
   }

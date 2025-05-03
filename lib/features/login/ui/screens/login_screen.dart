@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:volt_market/core/helper/device_utils.dart';
 import 'package:volt_market/core/helper/spacing_helper.dart';
 import 'package:volt_market/core/theme/font_weight_helper.dart';
 import 'package:volt_market/core/widgets/button_app_widget.dart';
@@ -16,6 +17,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final darkmode = DeviceUtils.isDarkMode(context);
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -36,7 +39,10 @@ class LoginScreen extends StatelessWidget {
                 verticalSpace(10),
                 Text(
                   'Welcome back, You have \nbeen missed!',
-                  style: TextStyle(fontSize: 24, color: Colors.grey[600]),
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: darkmode ? Colors.white : Colors.grey[600],
+                  ),
                   textAlign: TextAlign.start,
                 ),
                 verticalSpace(30),

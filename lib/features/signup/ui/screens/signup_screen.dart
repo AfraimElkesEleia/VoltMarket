@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:volt_market/core/helper/device_utils.dart';
 import 'package:volt_market/core/helper/navigation_helper.dart';
 import 'package:volt_market/core/helper/spacing_helper.dart';
 import 'package:volt_market/core/routing/my_routes.dart';
@@ -35,6 +36,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final darkmode = DeviceUtils.isDarkMode(context);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -60,7 +63,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   style: TextStyle(
                     fontSize: 40.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: darkmode ? Colors.white : Colors.black,
                   ),
                 ),
                 verticalSpace(10),
@@ -69,7 +72,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeightHelper.medium,
-                    color: Colors.grey[700],
+                    color: darkmode ? Colors.white : Colors.grey[700],
                   ),
                 ),
                 verticalSpace(10),
@@ -103,7 +106,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       'Already have an account? ',
                       style: TextStyles.font12PoppinsWhiteThin.copyWith(
                         fontWeight: FontWeightHelper.medium,
-                        color: Colors.black,
+                        color: darkmode ? Colors.white : Colors.black,
                       ),
                     ),
                     GestureDetector(

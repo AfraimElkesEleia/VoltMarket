@@ -8,12 +8,15 @@ import 'package:volt_market/features/main/navigation_screen.dart';
 import 'package:volt_market/features/onboarding/screens/onboarding_screen.dart';
 import 'package:volt_market/features/orders/logic/cubit/order_cubit.dart';
 import 'package:volt_market/features/orders/ui/screens/order_screen.dart';
+import 'package:volt_market/features/products/data/model/product.dart';
 import 'package:volt_market/features/products/logic/cubit/product_cubit.dart';
+import 'package:volt_market/features/products/ui/screens/item_screen.dart';
 import 'package:volt_market/features/products/ui/screens/products_screen.dart';
 import 'package:volt_market/features/signup/logic/cubit/signup_cubit.dart';
 import 'package:volt_market/features/signup/ui/screens/signup_screen.dart';
 
 class AppRouter {
+  ProductCubit _productCubit = ProductCubit();
   Route? generateRoute(RouteSettings settings) {
     final arguments = settings.arguments;
     switch (settings.name) {
@@ -44,13 +47,26 @@ class AppRouter {
               ),
         );
       case MyRoutes.mainScreen:
-        return MaterialPageRoute(builder: (_) => MainScreen());
+        return MaterialPageRoute(
+          builder:
+              (_) =>
+                  BlocProvider.value(value: _productCubit, child: MainScreen()),
+        );
       case MyRoutes.myOrdersScreen:
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider(
                 create: (context) => OrderCubit(),
                 child: OrdersScreen(),
+              ),
+        );
+      case MyRoutes.productDetailScreen:
+        final product = arguments as Product;
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider.value(
+                value: _productCubit,
+                child: Itemdetails(product: product),
               ),
         );
     }

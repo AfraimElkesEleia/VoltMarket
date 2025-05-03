@@ -46,10 +46,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   final List<Widget> _screens = [
-    BlocProvider(
-      create: (context) => ProductCubit(),
-      child: const ProductsScreen(),
-    ),
+    const ProductsScreen(),
     BlocProvider(create: (context) => CartCubit(), child: const CartScreen()),
     BlocProvider(
       create: (context) => FavoriteCubit(),

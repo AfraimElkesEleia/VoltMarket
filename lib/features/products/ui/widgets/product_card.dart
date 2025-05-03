@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:volt_market/core/helper/device_utils.dart';
+import 'package:volt_market/core/theme/colors_manager.dart';
 import 'package:volt_market/features/products/data/model/product.dart';
 import 'package:volt_market/features/products/ui/widgets/cart_button.dart';
 import 'package:volt_market/features/products/ui/widgets/favourite_button.dart';
@@ -10,6 +12,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final darkmode = DeviceUtils.isDarkMode(context);
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -20,6 +23,13 @@ class ProductCard extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
+                border: Border.all(
+                  color:
+                      darkmode
+                          ? ColorsManager.borderDark.withOpacity(0.2)
+                          : ColorsManager.borderLight.withOpacity(0.2),
+                  width: 1.5,
+                ),
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(8),
                 ),

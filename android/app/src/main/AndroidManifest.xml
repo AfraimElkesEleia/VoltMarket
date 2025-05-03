@@ -11,9 +11,9 @@
 <uses-feature android:name="android.hardware.camera.front" android:required="true"/>
 
     <application
-        android:label="volt_market"
+        android:label="Volt Market"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
            <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
    	       <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>  
     

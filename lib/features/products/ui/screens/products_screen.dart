@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:volt_market/core/constants/categories_icons.dart';
+import 'package:volt_market/core/constants/image_manager.dart';
+import 'package:volt_market/core/helper/device_utils.dart';
+import 'package:volt_market/core/helper/navigation_helper.dart';
+import 'package:volt_market/core/routing/my_routes.dart';
 import 'package:volt_market/features/products/data/model/product.dart';
 import 'package:volt_market/features/products/logic/cubit/product_cubit.dart';
 import 'package:volt_market/features/products/ui/widgets/product_card.dart';
@@ -36,11 +41,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        const SliverAppBar(
-          title: Text('E-Commerce App'),
-          floating: true,
-          actions: [IconButton(icon: Icon(Icons.search), onPressed: null)],
-        ),
+        const SliverAppBar(title: Text('E-Commerce App'), floating: true),
 
         // Categories Section
         SliverToBoxAdapter(child: _buildCategoriesSection()),
@@ -92,12 +93,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         GestureDetector(
                           onTap: () => _filterByCategory(null),
                           child: CircleAvatar(
-                            radius: 30,
+                            radius: 35,
                             backgroundColor:
                                 _selectedCategoryId == null
                                     ? Colors.blue[100]
                                     : Colors.grey[200],
-                            child: const Icon(Icons.all_inclusive, size: 30),
+                            child: Image.asset(ImageManager.all),
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -115,12 +116,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       GestureDetector(
                         onTap: () => _filterByCategory(category.id),
                         child: CircleAvatar(
-                          radius: 30,
+                          radius: 35,
                           backgroundColor:
                               _selectedCategoryId == category.id
                                   ? Colors.blue[100]
                                   : Colors.grey[200],
-                          child: const Icon(Icons.category, size: 30),
+                          child: Image.asset(categoriesIcons[index - 1]),
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -182,12 +183,21 @@ class _ProductsScreenState extends State<ProductsScreen> {
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              crossAxisSpacing: 8,
+              mainAxisExtent: 300,
               mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
               childAspectRatio: 0.75,
             ),
             delegate: SliverChildBuilderDelegate((context, index) {
-              return ProductCard(product: products[index]);
+              return GestureDetector(
+                onTap: () {
+                  context.pushNamed(
+                    MyRoutes.productDetailScreen,
+                    arguments: products[index],
+                  );
+                },
+                child: ProductCard(product: products[index]),
+              );
             }, childCount: products.length),
           ),
         );
