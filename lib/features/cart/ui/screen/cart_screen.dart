@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:volt_market/core/helper/device_utils.dart';
 import 'package:volt_market/features/cart/model/cart_item.dart';
 import 'package:volt_market/features/cart/logic/cubit/cart_cubit.dart';
 import 'package:volt_market/features/cart/logic/cubit/cart_state.dart';
@@ -24,6 +25,7 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final darkmode = DeviceUtils.isDarkMode(context);
     return BlocConsumer<CartCubit, CartState>(
       buildWhen:
           (previous, current) =>
@@ -82,7 +84,7 @@ class _CartScreenState extends State<CartScreen> {
                 //====================================================
                 Expanded(
                   child: Container(
-                    color: Colors.white,
+                    color: darkmode ? Color(0xFF121212) : Colors.white,
                     child: ListView.builder(
                       itemCount: cartItems.length,
                       itemBuilder: (context, index) {
@@ -131,18 +133,21 @@ class _CartScreenState extends State<CartScreen> {
                 //=========================================================
                 //=========================================================
                 Container(
-                  color: Colors.white,
+                  color: darkmode ? Color(0xFF121212) : Colors.white,
                   child: Center(
                     child: Container(
                       margin: EdgeInsets.all(8),
                       child: TextButton(
                         style: TextButton.styleFrom(
-                          backgroundColor: Color.fromARGB(
-                            255,
-                            32,
-                            29,
-                            56,
-                          ), // Button background color
+                          backgroundColor:
+                              darkmode
+                                  ? Color(0xFF4E47A1)
+                                  : Color.fromARGB(
+                                    255,
+                                    32,
+                                    29,
+                                    56,
+                                  ), // Button background color
                           foregroundColor: Colors.white, // Text color
                           minimumSize: Size(
                             150,
