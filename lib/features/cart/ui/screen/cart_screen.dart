@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:volt_market/features/cart/model/cart_item.dart';
@@ -33,21 +34,34 @@ class _CartScreenState extends State<CartScreen> {
         if (state is CartRemoving || state is CartUpdating) {
           isUpdating = true;
         } else if (state is OrderIsDone) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Your order has been placed successfully! 🎉"),
-              backgroundColor: Colors.green,
-            ),
-          );
+          AwesomeDialog(
+            context: context,
+            animType: AnimType.leftSlide,
+            headerAnimationLoop: false,
+            dialogType: DialogType.success,
+            showCloseIcon: true,
+            title: 'Succes',
+            desc: 'Your order has been placed successfully! 🎉',
+            btnOkOnPress: () {
+              debugPrint('OnClcik');
+            },
+            btnOkIcon: Icons.check_circle,
+            onDismissCallback: (type) {
+              debugPrint('Dialog Dissmiss from callback $type');
+            },
+          ).show();
         } else if (state is CartIsEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                "Oops! You need to add something to your cart first",
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.rightSlide,
+            headerAnimationLoop: false,
+            title: 'Error',
+            desc: 'Oops! You need to add something to your cart first',
+            btnOkOnPress: () {},
+            btnOkIcon: Icons.cancel,
+            btnOkColor: Colors.red,
+          ).show();
         } else if (state is CartLoaded || state is OrderIsDone) {
           isUpdating = false;
         }
@@ -58,9 +72,7 @@ class _CartScreenState extends State<CartScreen> {
         } else if (state is CartError) {
           return Center(child: Text('There is error happened'));
         }
-        if (state is CartLoaded) {
-          cartItems = state.items;
-        }
+        cartItems = context.read<CartCubit>().items;
         return SafeArea(
           child: Scaffold(
             body: Column(

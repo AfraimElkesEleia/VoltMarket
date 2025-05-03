@@ -23,7 +23,6 @@ class CartButton extends StatelessWidget {
       buildWhen:
           (previous, current) =>
               current is ProductsLoaded ||
-              current is CategoryProductsLoaded ||
               (current is ProductActionProcessing &&
                   current.productId == product.id) ||
               current is ProductError,
@@ -42,14 +41,12 @@ class CartButton extends StatelessWidget {
 
         // Get current cart status
         final isInCart =
-            state is ProductsLoaded
-                ? state.products
-                    .firstWhere(
-                      (p) => p.id == product.id,
-                      orElse: () => product,
-                    )
-                    .isInCart
-                : product.isInCart;
+            context
+                .read<ProductCubit>()
+                .products
+                .firstWhere((p) => p.id == product.id, orElse: () => product)
+                .isInCart;
+
         return IconButton(
           icon: Icon(
             isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
