@@ -23,9 +23,10 @@ class Itemdetails extends StatelessWidget {
           if (state is ProductsLoaded) {
             final updated = state.products.firstWhere(
               (p) => p.id == product.id,
-              orElse: () => product,
             );
             currentProduct = updated;
+            context.read<ProductCubit>().currentProduct = currentProduct;
+            context.read<ProductCubit>().productRating = product.rating;
           }
 
           return CustomScrollView(
@@ -83,10 +84,7 @@ class Itemdetails extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          RatingDisplay(
-                            rating: currentProduct.rating,
-                            starSize: 20,
-                          ),
+                          RatingDisplay(),
                           const SizedBox(width: 8),
                           Text(
                             '(${currentProduct.rating} reviews)',

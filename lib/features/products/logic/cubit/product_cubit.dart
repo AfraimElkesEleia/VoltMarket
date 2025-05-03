@@ -6,6 +6,7 @@ import 'package:volt_market/core/networking/favourite_service.dart';
 import 'package:volt_market/features/products/data/model/category.dart';
 import 'package:volt_market/features/products/data/model/product.dart';
 import 'package:volt_market/features/products/data/service/product_service.dart';
+import 'package:volt_market/features/products/data/service/review_service.dart';
 
 part 'product_state.dart';
 
@@ -14,12 +15,16 @@ class ProductCubit extends Cubit<ProductState> {
   late final FavoriteService _favoriteService;
   late final CartService _cartService;
   late final User? _currentUser;
+  late final ReviewService _reviewService;
+  Product? currentProduct;
   List<Product> products = [];
   List<Category> categories = [];
+  double productRating = 0;
   ProductCubit() : super(ProductInitial()) {
     _productService = ProductService();
     _favoriteService = FavoriteService();
     _cartService = CartService();
+    _reviewService = ReviewService();
     _currentUser = FirebaseAuth.instance.currentUser;
   }
 
@@ -53,8 +58,15 @@ class ProductCubit extends Cubit<ProductState> {
           return product.copyWith(isInCart: isInCart);
         }),
       );
+      final productsWithRatings = await Future.wait(
+        productsWithCartUpdate.map((product) async {
+          final avgRating = await _reviewService.getAverageRating(product.id);
+          return product.copyWith(rating: avgRating);
+        }),
+      );
+      products = productsWithRatings;
       if (!isClosed) {
-        emit(ProductsLoaded(products: productsWithCartUpdate));
+        emit(ProductsLoaded(products: productsWithRatings));
       }
     } catch (e) {
       emit(ProductError('Failed to fetch products: ${e.toString()}'));
@@ -91,7 +103,16 @@ class ProductCubit extends Cubit<ProductState> {
           return product.copyWith(isInCart: isInCart);
         }),
       );
-      emit(ProductsLoaded(products: productsWithCartUpdate));
+      final productsWithRatings = await Future.wait(
+        productsWithCartUpdate.map((product) async {
+          final avgRating = await _reviewService.getAverageRating(product.id);
+          return product.copyWith(rating: avgRating);
+        }),
+      );
+      products = productsWithRatings;
+      if (!isClosed) {
+        emit(ProductsLoaded(products: productsWithRatings));
+      }
     } catch (e) {
       emit(ProductError('Failed to fetch category products: ${e.toString()}'));
     }
@@ -101,7 +122,7 @@ class ProductCubit extends Cubit<ProductState> {
   Future<void> fetchAllCategories() async {
     try {
       emit(Loading());
-      final categories = await _productService.getAllCategories();
+      categories = await _productService.getAllCategories();
       if (!isClosed) {
         emit(CategoriesLoaded(categories));
       }
@@ -220,6 +241,32 @@ class ProductCubit extends Cubit<ProductState> {
       emit(ProductsLoaded(products: updatedProducts));
     } catch (e) {
       emit(ProductError('Failed to toggle cart item: ${e.toString()}'));
+    }
+  }
+
+  Future<void> submitRating({
+    required int productId,
+    required int rating,
+  }) async {
+    try {
+      emit(Loading());
+      await _reviewService.submitReview(productId: productId, rating: rating);
+
+      // Refresh product rating
+      final updatedRating = await _reviewService.getAverageRating(productId);
+
+      // Update product in local state if ProductsLoaded
+      final updatedProducts =
+          products.map((product) {
+            if (product.id == productId) {
+              return product.copyWith(rating: updatedRating);
+            }
+            return product;
+          }).toList();
+
+      emit(ProductsLoaded(products: updatedProducts));
+    } catch (e) {
+      emit(ProductError('Failed to submit rating: ${e.toString()}'));
     }
   }
 }
