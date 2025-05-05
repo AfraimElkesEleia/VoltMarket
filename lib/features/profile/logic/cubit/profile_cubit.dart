@@ -41,7 +41,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       // Check which fields actually changed
       final currentProfile = profile;
 
-      if (currentProfile == null || currentUser == null) {
+      if (currentProfile == null) {
         throw Exception('No profile loaded');
       }
 
@@ -78,10 +78,6 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> updateProfileImage() async {
     emit(Loading());
     try {
-      if (currentUser == null) {
-        throw Exception('No user logged in');
-      }
-
       // Upload to Supabase Storage
       final imageUrl = await _storageService.uploadProfilePicture(
         userId: currentUser!.uid,
@@ -128,9 +124,6 @@ class ProfileCubit extends Cubit<ProfileState> {
     // Check internet connection
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.none)) {
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('No internet connection')),
-      // );
       emit(NetworkError());
       return;
     }
@@ -140,28 +133,19 @@ class ProfileCubit extends Cubit<ProfileState> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // ScaffoldMessenger.of(
-        //   context,
-        // ).showSnackBar(SnackBar(content: Text('Location permission denied')));
         emit(RequestPermission());
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Location permission permanently denied')),
-      // );
-      openAppSettings(); // From permission_handler
+      await openAppSettings(); // From permission_handler
       return;
     }
 
     // Check if location services are enabled
     bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isLocationEnabled) {
-      // ScaffoldMessenger.of(
-      //   context,
-      // ).showSnackBar(SnackBar(content: Text('Please enable GPS')));
       await Geolocator.openLocationSettings();
       return;
     }
@@ -172,17 +156,18 @@ class ProfileCubit extends Cubit<ProfileState> {
         desiredAccuracy: LocationAccuracy.high,
       );
 
-      // Optionally use geocoding to get address
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
+      debugPrint(placemarks.toString());
       Placemark place = placemarks.first;
 
       String address =
           '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
       await _service.updateUserAddress(address);
       await _service.updateUserCity(place.locality ?? 'Not Found');
+      await _service.updateUserZip(place.postalCode ?? "NotFound");
       await fetchProfile();
     } catch (e) {
       emit(ErrorGps(message: e.toString()));
