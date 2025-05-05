@@ -30,8 +30,6 @@ class CartCubit extends Cubit<CartState> {
   }
 
   Future<void> removeFromCart(int cartItemId) async {
-    if (state is! CartLoaded) return;
-
     final currentItems = items;
     emit(CartRemoving());
 
@@ -49,8 +47,6 @@ class CartCubit extends Cubit<CartState> {
   }
 
   Future<void> updateQuantity(int cartItemId, int newQuantity) async {
-    if (state is! CartLoaded) return;
-
     final currentItems = items;
     emit(CartUpdating());
 
@@ -72,8 +68,6 @@ class CartCubit extends Cubit<CartState> {
   }
 
   Future<void> clearCart(String userId) async {
-    if (state is! CartLoaded) return;
-
     final currentItems = items;
     emit(CartLoaded());
 
@@ -92,11 +86,7 @@ class CartCubit extends Cubit<CartState> {
   }
 
   double get totalPrice {
-    if (state is! CartLoaded) return 0.0;
-    return items.fold(
-      0.0,
-      (sum, item) => sum + item.totalPrice,
-    );
+    return items.fold(0.0, (sum, item) => sum + item.totalPrice);
   }
 
   /// 🔥 Create order and clear cart if successful
