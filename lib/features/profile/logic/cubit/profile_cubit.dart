@@ -167,7 +167,6 @@ class ProfileCubit extends Cubit<ProfileState> {
           '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
       await _service.updateUserAddress(address);
       await _service.updateUserCity(place.locality ?? 'Not Found');
-      await _service.updateUserZip(place.postalCode ?? "NotFound");
       await fetchProfile();
     } catch (e) {
       emit(ErrorGps(message: e.toString()));
