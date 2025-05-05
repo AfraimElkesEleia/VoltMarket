@@ -101,7 +101,6 @@ class CartCubit extends Cubit<CartState> {
 
   /// 🔥 Create order and clear cart if successful
   Future<void> createOrderFromCart() async {
-    if (_currentUser == null) return;
     if (items.isEmpty) {
       emit(CartIsEmpty());
       return;
@@ -109,7 +108,7 @@ class CartCubit extends Cubit<CartState> {
     try {
       emit(CartUpdating());
       await _orderService.createOrder();
-      await _cartService.clearCart(_currentUser.uid);
+      await _cartService.clearCart(_currentUser!.uid);
       emit(OrderIsDone());
       await loadCart(); // reload empty cart
     } catch (e) {
