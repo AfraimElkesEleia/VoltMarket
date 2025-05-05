@@ -152,7 +152,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       // ScaffoldMessenger.of(context).showSnackBar(
       //   SnackBar(content: Text('Location permission permanently denied')),
       // );
-      openAppSettings(); // From permission_handler
+      await openAppSettings(); // From permission_handler
       return;
     }
 
