@@ -7,25 +7,16 @@ import 'package:volt_market/features/cart/logic/cubit/cart_cubit.dart';
 import 'package:volt_market/features/cart/logic/cubit/cart_state.dart';
 import 'package:volt_market/features/cart/ui/widgets/cart_item.dart';
 
-class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+class CartScreen extends StatelessWidget {
+  CartScreen({super.key});
 
-  @override
-  State<CartScreen> createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
   List<CartItem> cartItems = [];
   bool isUpdating = false;
-  @override
-  void initState() {
-    super.initState();
-    context.read<CartCubit>().loadCart();
-  }
 
   @override
   Widget build(BuildContext context) {
     final darkmode = DeviceUtils.isDarkMode(context);
+    context.read<CartCubit>().loadCart();
     return BlocConsumer<CartCubit, CartState>(
       buildWhen:
           (previous, current) =>
@@ -91,37 +82,31 @@ class _CartScreenState extends State<CartScreen> {
                         return CartItemWidget(
                           item: cartItems[index],
                           onAdd: () {
-                            setState(() {
-                              cartItems[index].quantity++;
+                            cartItems[index].quantity++;
+                            context.read<CartCubit>().updateQuantity(
+                              cartItems[index].productId,
+                              cartItems[index].quantity,
+                            );
+                          },
+                          onSubtract: () {
+                            if (cartItems[index].quantity > 1) {
+                              cartItems[index].quantity--;
                               context.read<CartCubit>().updateQuantity(
                                 cartItems[index].productId,
                                 cartItems[index].quantity,
                               );
-                            });
-                          },
-                          onSubtract: () {
-                            setState(() {
-                              if (cartItems[index].quantity > 1) {
-                                cartItems[index].quantity--;
-                                context.read<CartCubit>().updateQuantity(
-                                  cartItems[index].productId,
-                                  cartItems[index].quantity,
-                                );
-                              } else {
-                                context.read<CartCubit>().removeFromCart(
-                                  cartItems[index].productId,
-                                );
-                                cartItems.removeAt(index);
-                              }
-                            });
-                          },
-                          removeItem: () {
-                            setState(() {
+                            } else {
                               context.read<CartCubit>().removeFromCart(
                                 cartItems[index].productId,
                               );
                               cartItems.removeAt(index);
-                            });
+                            }
+                          },
+                          removeItem: () {
+                            context.read<CartCubit>().removeFromCart(
+                              cartItems[index].productId,
+                            );
+                            cartItems.removeAt(index);
                           },
                         );
                       },

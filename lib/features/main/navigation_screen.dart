@@ -19,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     const ProductsScreen(),
-    BlocProvider(create: (context) => CartCubit(), child: const CartScreen()),
+    BlocProvider(create: (context) => CartCubit(), child: CartScreen()),
     BlocProvider(
       create: (context) => FavoriteCubit(),
       child: const FavouriteScreen(),
