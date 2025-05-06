@@ -112,8 +112,9 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> logout() async {
     emit(Loading());
     try {
-      await FirebaseAuth.instance.signOut();
-      emit(LoggedOut());
+      await FirebaseAuth.instance.signOut().whenComplete(
+        () => emit(LoggedOut()),
+      );
     } catch (e) {
       emit(ProfileError('Failed to logout'));
     }
