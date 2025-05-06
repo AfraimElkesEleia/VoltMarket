@@ -5,7 +5,6 @@ class CartItem {
   final int productId;
   int quantity;
   final DateTime addedAt;
-  final int? productVariantId;
   final Product product;
   final ProductVariant? variant;
 
@@ -15,7 +14,6 @@ class CartItem {
     required this.quantity,
     required this.addedAt,
     required this.product,
-    this.productVariantId,
     this.variant,
   });
 
@@ -33,7 +31,6 @@ class CartItem {
       productId: map['product_id'] as int,
       quantity: map['quantity'] as int,
       addedAt: DateTime.parse(map['added_at'] as String),
-      productVariantId: map['product_variant_id'] as int?,
       product: Product.fromJson(map['products'] as Map<String, dynamic>),
       variant:
           map['product_variants'] != null
