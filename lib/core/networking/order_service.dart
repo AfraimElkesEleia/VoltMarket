@@ -8,10 +8,7 @@ class OrderService {
 
   Future<void> createOrder() async {
     final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) throw Exception("User not logged in.");
-
-    final userId = user.uid;
+    final userId = user!.uid;
 
     // Fetch cart items
     final cartItems = await _cartService.getCartItems(userId);
