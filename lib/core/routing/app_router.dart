@@ -16,7 +16,7 @@ import 'package:volt_market/features/signup/logic/cubit/signup_cubit.dart';
 import 'package:volt_market/features/signup/ui/screens/signup_screen.dart';
 
 class AppRouter {
-  ProductCubit _productCubit = ProductCubit();
+  late final ProductCubit _productCubit;
   Route? generateRoute(RouteSettings settings) {
     final arguments = settings.arguments;
     switch (settings.name) {
@@ -47,6 +47,7 @@ class AppRouter {
               ),
         );
       case MyRoutes.mainScreen:
+        _productCubit = ProductCubit();
         return MaterialPageRoute(
           builder:
               (_) =>

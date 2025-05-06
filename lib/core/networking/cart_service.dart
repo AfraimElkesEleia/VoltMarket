@@ -11,7 +11,6 @@ class CartService {
   Future<void> addToCart({
     required int productId,
     required String userId,
-    int? productVariantId,
     int quantity = 1,
   }) async {
     final existingItem =
@@ -36,7 +35,6 @@ class CartService {
       await _supabase.from('cart_items').insert({
         'user_id': userId,
         'product_id': productId,
-        'product_variant_id': productVariantId,
         'quantity': quantity,
       });
     }
@@ -109,11 +107,6 @@ class CartService {
         .select()
         .eq('user_id', userId)
         .eq('product_id', productId);
-
-    if (variantId != null) {
-      query.eq('product_variant_id', variantId);
-    }
-
     final response = await query.maybeSingle();
     return response != null;
   }
