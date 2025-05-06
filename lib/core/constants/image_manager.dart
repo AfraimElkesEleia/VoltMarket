@@ -12,4 +12,5 @@ abstract class ImageManager {
   static const laptop = 'assets/images/laptop.png';
   static const tv = 'assets/images/tv.png';
   static const all = 'assets/images/all.png';
+  static const voltMarketLogo = 'assets/images/volt_icon_home.png';
 }

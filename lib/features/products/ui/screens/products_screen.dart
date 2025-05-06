@@ -40,7 +40,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        const SliverAppBar(title: Text('E-Commerce App'), floating: true),
+        SliverAppBar(
+          title: Row(
+            children: [
+              Image.asset(ImageManager.voltMarketLogo, width: 40, height: 40),
+              Text(
+                'Volt Market',
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+          floating: true,
+        ),
 
         // Categories Section
         SliverToBoxAdapter(child: _buildCategoriesSection()),
@@ -82,7 +93,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
             height: 100,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: context.read<ProductCubit>().categories.length + 1, // +1 for "All" option
+              itemCount:
+                  context.read<ProductCubit>().categories.length +
+                  1, // +1 for "All" option
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return Padding(
