@@ -18,6 +18,7 @@ An e-commerce app for electronics built with PostgreSQL (Supabase) and (Firebase
   <img src="https://github.com/user-attachments/assets/afa9d944-31fd-401d-b9ff-f02adcdf5721" width="30%" />
   <img src="https://github.com/user-attachments/assets/839e8a8b-692e-48f4-be30-21395b84b2d3" width="30%" />
 </div>
+
 ### 🔐 Authentication
 - Sign In  
   <div align="center" style="display: flex; justify-content: space-between;">
